@@ -63,7 +63,13 @@ async function initDatabase() {
     console.log('Database connection established');
   } catch (err) {
     console.error('Database connection failed:', err.message);
-    process.exit(1);
+    const exitOnFailEnv = process.env.DB_EXIT_ON_FAIL;
+    const exitOnFail = exitOnFailEnv === undefined ? true : exitOnFailEnv === 'true';
+    if (exitOnFail) {
+      process.exit(1);
+    } else {
+      console.warn('Continuing without a database connection because DB_EXIT_ON_FAIL is set to false');
+    }
   }
 }
 
