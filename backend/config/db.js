@@ -60,7 +60,7 @@ async function initDatabase() {
   try {
     // Simple connectivity check
     await pool.query('SELECT 1');
-    console.log('Database connection established');
+    console.log('Database connection successfully');
   } catch (err) {
     console.error('Database connection failed:', err.message);
     process.exit(1);
