@@ -1,7 +1,7 @@
 // src/components/AdminDashboard/AdminProductList.js
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import * as productService from './services/productService';
+import * as productService from '../../services/productService';
 import io from 'socket.io-client'; // Import Socket.IO client
 import '../../App.css'; // For styling
 

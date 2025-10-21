@@ -67,7 +67,8 @@ const POSForm = ({ products, imageMap }) => {
 
   const handleCheckout = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/sales', {
+      const API_URL = process.env.REACT_APP_API_URL || '';
+      const response = await fetch(`${API_URL}/sales`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

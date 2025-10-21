@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { X, Plus, Minus } from "lucide-react";
 import "./Cart.css";
 
+const API_URL = process.env.REACT_APP_API_URL || "";
+
 const Cart = ({ cart, setCart, imageMap, setError }) => {
   const [loading, setLoading] = useState({});
   const [isLoadingCart, setIsLoadingCart] = useState(true);
@@ -19,7 +21,7 @@ const Cart = ({ cart, setCart, imageMap, setError }) => {
           setIsLoadingCart(false);
           return;
         }
-        const response = await fetch("http://localhost:5000/api/cart", {
+        const response = await fetch(`${API_URL}/cart`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -68,7 +70,7 @@ const Cart = ({ cart, setCart, imageMap, setError }) => {
         setError(`Cannot add more ${product.name}. Only ${product.stock} in stock.`);
         return;
       }
-      const response = await fetch("http://localhost:5000/api/cart/update", {
+      const response = await fetch(`${API_URL}/cart/update`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -84,7 +86,7 @@ const Cart = ({ cart, setCart, imageMap, setError }) => {
         }
         throw new Error("Failed to update quantity");
       }
-      const cartResponse = await fetch("http://localhost:5000/api/cart", {
+      const cartResponse = await fetch(`${API_URL}/cart`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -110,7 +112,7 @@ const Cart = ({ cart, setCart, imageMap, setError }) => {
         setError("Please log in to remove items from cart.");
         return;
       }
-      const response = await fetch(`http://localhost:5000/api/cart/remove/${productId}`, {
+      const response = await fetch(`${API_URL}/cart/remove/${productId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -124,7 +126,7 @@ const Cart = ({ cart, setCart, imageMap, setError }) => {
         }
         throw new Error("Failed to remove product");
       }
-      const cartResponse = await fetch("http://localhost:5000/api/cart", {
+      const cartResponse = await fetch(`${API_URL}/cart`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

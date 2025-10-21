@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Edit, Trash, Box, ShoppingCart, Users } from "lucide-react";
 import './AdminDashboard.css';
 
+const API_URL = process.env.REACT_APP_API_URL || "";
+const API_ORIGIN = API_URL.replace(/\/api\/?$/, "");
+
 const ConfirmationModal = ({ message, onConfirm, onCancel }) => {
   return (
     <div className="modal-overlay">
@@ -56,7 +59,7 @@ export const AdminDashboard = ({ products, setProducts, error, setError, handleL
       if (!token) throw new Error("No authentication token found. Please log in.");
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
-      const response = await fetch("http://localhost:5000/api/users", {
+      const response = await fetch(`${API_URL}/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -94,7 +97,7 @@ export const AdminDashboard = ({ products, setProducts, error, setError, handleL
       if (!token) throw new Error("No authentication token found. Please log in.");
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
-      const response = await fetch("http://localhost:5000/api/cart-notifications", {
+      const response = await fetch(`${API_URL}/cart-notifications`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -206,8 +209,8 @@ export const AdminDashboard = ({ products, setProducts, error, setError, handleL
     }
 
     const url = isEditing
-      ? `http://localhost:5000/api/products/${formData.id}`
-      : `http://localhost:5000/api/products`;
+      ? `${API_URL}/products/${formData.id}`
+      : `${API_URL}/products`;
     const method = isEditing ? "PUT" : "POST";
 
     const data = new FormData();
@@ -289,7 +292,7 @@ export const AdminDashboard = ({ products, setProducts, error, setError, handleL
       image: null,
       category: product.category || "",
     });
-    setImagePreview(product.image_url ? `http://localhost:5000/uploads/${product.image_url}` : (imageMap[product.name] || null));
+    setImagePreview(product.image_url ? `${API_ORIGIN}/uploads/${product.image_url}` : (imageMap[product.name] || null));
     setIsEditing(true);
     setFormError("");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -317,7 +320,7 @@ export const AdminDashboard = ({ products, setProducts, error, setError, handleL
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-      const response = await fetch(`http://localhost:5000/api/products/${productToDelete}`, {
+      const response = await fetch(`${API_URL}/products/${productToDelete}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -387,7 +390,7 @@ export const AdminDashboard = ({ products, setProducts, error, setError, handleL
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-      const response = await fetch(`http://localhost:5000/api/users/${userToDelete}`, {
+      const response = await fetch(`${API_URL}/users/${userToDelete}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -481,7 +484,7 @@ export const AdminDashboard = ({ products, setProducts, error, setError, handleL
   };
 
   const getProductImage = (product) => {
-    return product?.image_url ? `http://localhost:5000/uploads/${product.image_url}` : (imageMap[product?.name] || "/placeholder.jpg");
+    return product?.image_url ? `${API_ORIGIN}/uploads/${product.image_url}` : (imageMap[product?.name] || "/placeholder.jpg");
   };
 
   const filteredProducts = getSortedFilteredProducts().filter((product) => 
