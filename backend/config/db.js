@@ -1,33 +1,70 @@
 // config/db.js
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
 
-dotenv.config(); // Ensure environment variables are loaded here too
+// Load environment variables
+dotenv.config();
 
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
+// Build a MySQL config that works locally and on Railway
+function resolveMysqlConfig() {
+  // Prefer DATABASE_URL if it points to MySQL (Railway sometimes provides this)
+  const databaseUrl = process.env.DATABASE_URL || process.env.MYSQL_URL;
+  if (databaseUrl && databaseUrl.startsWith('mysql://')) {
+    const url = new URL(databaseUrl);
+    return {
+      host: url.hostname,
+      port: Number(url.port || 3306),
+      user: decodeURIComponent(url.username),
+      password: decodeURIComponent(url.password),
+      database: url.pathname.replace(/^\//, ''),
+      waitForConnections: true,
+      connectionLimit: Number(process.env.MYSQL_CONNECTION_LIMIT || 10),
+      queueLimit: 0,
+      // Enable SSL only if explicitly requested
+      ssl: process.env.MYSQL_SSL === 'true' ? { rejectUnauthorized: true } : undefined,
+    };
+  }
+
+  // Railway MySQL specific env vars
+  if (process.env.MYSQLHOST) {
+    return {
+      host: process.env.MYSQLHOST,
+      port: Number(process.env.MYSQLPORT || 3306),
+      user: process.env.MYSQLUSER,
+      password: process.env.MYSQLPASSWORD,
+      database: process.env.MYSQLDATABASE,
+      waitForConnections: true,
+      connectionLimit: Number(process.env.MYSQL_CONNECTION_LIMIT || 10),
+      queueLimit: 0,
+      ssl: process.env.MYSQL_SSL === 'true' ? { rejectUnauthorized: true } : undefined,
+    };
+  }
+
+  // Fallback to generic DB_* env vars (local dev)
+  return {
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: Number(process.env.DB_PORT || 3306),
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     waitForConnections: true,
-    connectionLimit: 10, // Max number of concurrent connections
-    queueLimit: 0 // No limit on queued requests
-});
+    connectionLimit: Number(process.env.MYSQL_CONNECTION_LIMIT || 10),
+    queueLimit: 0,
+    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : undefined,
+  };
+}
 
-const initDatabase = () => {
-    pool.getConnection((err, connection) => {
-        if (err) {
-            console.error('Database connection failed:', err.stack);
-            // Consider exiting the process or implementing a retry mechanism
-            process.exit(1);
-            return;
-        }
-        console.log('Connected to database as ID ' + connection.threadId);
-        connection.release(); // Release the connection back to the pool immediately
-    });
-};
+const pool = mysql.createPool(resolveMysqlConfig());
 
-module.exports = {
-    pool,
-    initDatabase
-};
+async function initDatabase() {
+  try {
+    // Simple connectivity check
+    await pool.query('SELECT 1');
+    console.log('Database connection established');
+  } catch (err) {
+    console.error('Database connection failed:', err.message);
+    process.exit(1);
+  }
+}
+
+module.exports = { pool, initDatabase };

@@ -19,7 +19,7 @@ router.use((req, res, next) => {
 // @access Public (viewable by anyone, authenticated or not)
 router.get('/', async (req, res) => {
     try {
-        const [rows] = await pool.promise().query('SELECT * FROM products ORDER BY created_at DESC');
+        const [rows] = await pool.query('SELECT * FROM products ORDER BY created_at DESC');
         res.json(rows);
     } catch (error) {
         console.error('Error fetching products:', error.message);
@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const [rows] = await pool.promise().query('SELECT * FROM products WHERE id = ?', [id]);
+        const [rows] = await pool.query('SELECT * FROM products WHERE id = ?', [id]);
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Product not found.' });
         }
@@ -61,11 +61,11 @@ router.post('/', protect, authorizeRoles('admin'), async (req, res) => {
     }
 
     try {
-        const [result] = await pool.promise().query(
+        const [result] = await pool.query(
             'INSERT INTO products (name, description, price, stock_quantity, category, image_url) VALUES (?, ?, ?, ?, ?, ?)',
             [name, description, price, stock_quantity, category, image_url]
         );
-        const [newProductRows] = await pool.promise().query('SELECT * FROM products WHERE id = ?', [result.insertId]);
+        const [newProductRows] = await pool.query('SELECT * FROM products WHERE id = ?', [result.insertId]);
         const newProduct = newProductRows[0];
 
         // Emit real-time update to all connected clients
@@ -99,7 +99,7 @@ router.put('/:id', protect, authorizeRoles('admin'), async (req, res) => {
     }
 
     try {
-        const [result] = await pool.promise().query(
+        const [result] = await pool.query(
             'UPDATE products SET name = ?, description = ?, price = ?, stock_quantity = ?, category = ?, image_url = ? WHERE id = ?',
             [name, description, price, stock_quantity, category, image_url, id]
         );
@@ -108,7 +108,7 @@ router.put('/:id', protect, authorizeRoles('admin'), async (req, res) => {
             return res.status(404).json({ message: 'Product not found.' });
         }
 
-        const [updatedProductRows] = await pool.promise().query('SELECT * FROM products WHERE id = ?', [id]);
+        const [updatedProductRows] = await pool.query('SELECT * FROM products WHERE id = ?', [id]);
         const updatedProduct = updatedProductRows[0];
 
         // Emit real-time update
@@ -130,7 +130,7 @@ router.put('/:id', protect, authorizeRoles('admin'), async (req, res) => {
 router.delete('/:id', protect, authorizeRoles('admin'), async (req, res) => {
     const { id } = req.params;
     try {
-        const [result] = await pool.promise().query('DELETE FROM products WHERE id = ?', [id]);
+        const [result] = await pool.query('DELETE FROM products WHERE id = ?', [id]);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Product not found.' });

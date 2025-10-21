@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const mysql = require('mysql2/promise');
+const { pool: db, initDatabase } = require('./config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
@@ -25,13 +25,8 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Database connection
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
+// Ensure we can connect to the database (Railway/local)
+initDatabase();
 
 // Initialize database tables and seed data
 const initializeDatabase = async () => {

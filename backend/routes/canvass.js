@@ -16,11 +16,11 @@ router.post('/request', protect, authorizeRoles('user'), async (req, res) => {
     }
 
     try {
-        const [result] = await pool.promise().query(
+        const [result] = await pool.query(
             'INSERT INTO canvass_requests (user_id, product_id, message, status) VALUES (?, ?, ?, ?)',
             [user_id, product_id || null, message, 'pending']
         );
-        const [newRequest] = await pool.promise().query('SELECT * FROM canvass_requests WHERE id = ?', [result.insertId]);
+        const [newRequest] = await pool.query('SELECT * FROM canvass_requests WHERE id = ?', [result.insertId]);
 
         res.status(201).json({ message: 'Canvass request submitted successfully.', request: newRequest[0] });
     } catch (error) {
@@ -35,7 +35,7 @@ router.post('/request', protect, authorizeRoles('user'), async (req, res) => {
 router.get('/requests', protect, authorizeRoles('admin'), async (req, res) => {
     try {
         // You might want to join with users and products tables for more context
-        const [rows] = await pool.promise().query(
+        const [rows] = await pool.query(
             `SELECT cr.*, u.name as user_name, u.email as user_email, p.name as product_name
              FROM canvass_requests cr
              JOIN users u ON cr.user_id = u.id
@@ -61,7 +61,7 @@ router.put('/requests/:id/status', protect, authorizeRoles('admin'), async (req,
     }
 
     try {
-        const [result] = await pool.promise().query(
+        const [result] = await pool.query(
             'UPDATE canvass_requests SET status = ? WHERE id = ?',
             [status, id]
         );

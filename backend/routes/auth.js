@@ -23,7 +23,7 @@ router.post('/signup', async (req, res) => {
 
     try {
         // Check if user already exists
-        const [rows] = await pool.promise().query('SELECT * FROM users WHERE email = ?', [email]);
+        const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
         if (rows.length > 0) {
             return res.status(400).json({ message: 'User with this email already exists.' });
         }
@@ -33,7 +33,7 @@ router.post('/signup', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt); // Hash the password with the salt
 
         // Insert new user into database
-        const [result] = await pool.promise().query(
+        const [result] = await pool.query(
             'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
             [name, email, hashedPassword, 'user'] // Default role is 'user'
         );
@@ -70,7 +70,7 @@ router.post('/login', async (req, res) => {
 
     try {
         // Check if user exists
-        const [rows] = await pool.promise().query('SELECT * FROM users WHERE email = ?', [email]);
+        const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
         if (rows.length === 0) {
             return res.status(400).json({ message: 'Invalid credentials.' }); // Generic message for security
         }
