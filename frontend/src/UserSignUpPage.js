@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_BASE_URL } from './config';
 
 const UserSignupPage = ({ setCurrentPage, setIsAuthenticated }) => {
   const [username, setUsername] = useState('');
@@ -8,7 +9,7 @@ const UserSignupPage = ({ setCurrentPage, setIsAuthenticated }) => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/signup', {
+      const response = await fetch(`${API_BASE_URL}/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),

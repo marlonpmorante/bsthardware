@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_BASE_URL } from '../config';
 import './Admin.css'; // Assuming you have a CSS file for admin styles
 
 export const AdminLoginPage = ({ setIsAuthenticated, setCurrentPage }) => {
@@ -14,7 +15,7 @@ export const AdminLoginPage = ({ setIsAuthenticated, setCurrentPage }) => {
 
     try {
       // Replace with your actual backend login endpoint
-      const response = await fetch('http://localhost:5000/api/admin/login', {
+      const response = await fetch(`${API_BASE_URL}/admin-login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

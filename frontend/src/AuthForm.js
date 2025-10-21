@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from './config';
 import { Eye, EyeOff } from 'lucide-react';
 import './AuthForm.css';
 
@@ -65,7 +66,7 @@ const AuthForm = ({ setCurrentPage, setIsAuthenticated, setUserRole, setCart, se
     setLoading(true);
 
     try {
-      const apiUrl = 'http://localhost:5000'; // Ensure this matches your backend
+      const apiUrl = API_BASE_URL.replace(/\/$/, '');
       if (!isLogin) {
         if (!email) {
           setError('Email is required for signup');

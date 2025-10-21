@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { API_BASE_URL } from "./config";
 import "./App.css";
 import "./AuthForm.css";
 import "./Cart.css";
@@ -206,7 +207,7 @@ function App() {
 
   const fetchProducts = useCallback(async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/products");
+      const response = await fetch(`${API_BASE_URL}/products`);
       if (!response.ok) throw new Error("Failed to fetch products");
       const data = await response.json();
       setProducts(data);
@@ -220,7 +221,7 @@ function App() {
   const fetchCart = useCallback(async () => {
     if (!isAuthenticated || userRole !== "user") return;
     try {
-      const response = await fetch("http://localhost:5000/api/cart", {
+      const response = await fetch(`${API_BASE_URL}/cart`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -310,7 +311,7 @@ function App() {
   const handleLogout = async () => {
     if (userRole === "user") {
       try {
-        const response = await fetch("http://localhost:5000/api/cart/checkout", {
+        const response = await fetch(`${API_BASE_URL}/cart/checkout`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -428,7 +429,7 @@ function App() {
   const ProductsPage = ({ setCart }) => {
     const addToCart = async (product) => {
       try {
-        const response = await fetch("http://localhost:5000/api/cart/add", {
+        const response = await fetch(`${API_BASE_URL}/cart/add`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -440,7 +441,7 @@ function App() {
           const errorData = await response.json();
           throw new Error(errorData.error || "Failed to add to cart");
         }
-        const cartResponse = await fetch("http://localhost:5000/api/cart", {
+        const cartResponse = await fetch(`${API_BASE_URL}/cart`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
