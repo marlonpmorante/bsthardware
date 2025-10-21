@@ -1,0 +1,120 @@
+/* Auth Container */
+.login-container {
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Auth Form */
+.login-form {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* Form Input */
+.form-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    background: #f8fafc;
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+/* Form Error */
+.form-error {
+    color: #dc2626;
+    font-size: 14px;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+/* Login Button */
+.login-button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.login-button:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.login-button:active {
+    transform: translateY(0);
+}
+
+/* Responsive Design for Auth Pages */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 15px;
+    }
+
+    .login-form {
+        padding: 20px;
+    }
+
+    .form-input {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .login-button {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+
+    .login-options {
+    text-align: center;
+    padding: 20px;
+    background: #f8fafc;
+    margin: 0 20px;
+}
+.login-options button {
+    color: #3b82f6;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 16px;
+    margin: 0 5px;
+}
+.login-options button:hover {
+    color: #2563eb;
+}
+}
